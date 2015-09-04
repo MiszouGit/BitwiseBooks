@@ -10,12 +10,7 @@
     app.config( function( $stateProvider, $urlRouterProvider ){
         $stateProvider.state('bitwiseBooks', {
             abstract: true,
-            template: '<ui-view>',
-            resolve: {
-                bootstrap: function( BootStrapService ){
-                    return BootStrapService.bootstrap();
-                }
-            }
+            template: '<ui-view>'
         }).state('bitwiseBooks.home', {
             url: '/',
             controller: 'HomeController',
@@ -23,11 +18,28 @@
         }).state('bitwiseBooks.books', {
             url: '/books',
             controller: 'BooksController',
-            templateUrl: 'books/books.html'
+            controllerAs: 'books',
+            templateUrl: 'books/books.html',
+            resolve:{
+                books: function(BooksService) {
+                    return BooksService.getBooks();
+                },
+                authors: function(AuthorsService) {
+                    debugger;
+                    return AuthorsService.getAuthors();
+                }
+            }
         }).state('bitwiseBooks.books.single', {
             url: '/:bookId',
             controller: 'BookController',
-            templateurl: 'books/book.html'
+            controllerAs: 'book',
+            templateUrl: 'books/book.html',
+            resolve:{
+                book: function( books, BooksService, $stateParams ){
+                    debugger;
+                    return BooksService.find($stateParams.bookId);
+                }
+            }
         });
         $urlRouterProvider.otherwise('/');
     });

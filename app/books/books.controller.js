@@ -7,7 +7,8 @@
 
     var app = angular.module('BitwiseBooks');
 
-    app.controller('BooksController', function( $scope, BooksService ){
-        $scope.books = BooksService.books;
+    app.controller('BooksController', function( $scope, books ){
+        var vm = this;
+        vm.books = books;
     });
 }());
