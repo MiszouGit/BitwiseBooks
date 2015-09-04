@@ -6,23 +6,28 @@
     'use strict';
     var app = angular.module('BitwiseBooks');
 
-    app.service('BooksService', function(){
-        var books = [];
+    app.service('BooksService', function(Book, $http){
+        var vm = this;
+        vm.books = [];
 
-        function bootstrap( data ){
+        vm.makeBooks = function makebooks( data ){
             data.forEach( function( book ){
-               books.push( book );
+               vm.books.push( new Book(book) );
             });
-        }
+            return vm.books;
+        };
 
-        function find( id ) {
-            return _.find( books, { id: id } );
-        }
+        vm.getBooks = function getBooks(){
+            return $http.get('../../books.json').then( function( res ) {
+                return vm.makeBooks( res.data );
+            }, function( err ){
+                console.log(err);
+                return("Book not found");
+            });
+        };
 
-        return {
-            find: find,
-            bootstrap: bootstrap,
-            books: books
+        vm.find = function find( id ) {
+            return _.find( vm.books, { _id: id } );
         };
     });
 })();
